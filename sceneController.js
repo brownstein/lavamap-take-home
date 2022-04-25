@@ -13,6 +13,8 @@ class SceneController {
 
     this.mousePosition = new THREE.Vector2()
 
+    this.target = null;
+
     this.viewport.addEventListener('mousedown', this.mouseCapture)
     this.viewport.addEventListener('mousemove', this.setMousePosition)
   }
@@ -34,6 +36,7 @@ class SceneController {
     mesh.position.set(positionX, 10, positionZ)
     this.scene.add(mesh)
     this.sceneObjects.push({box, material, mesh})
+    this.target = mesh;
   }
 
   mouseCapture = (event) => {
@@ -47,9 +50,18 @@ class SceneController {
     }
   }
 
-  move() {
-    //Implement move here
-    //object must be moved like in the sample recording
+  move(viewportDelta) {
+    const { Vector3 } = THREE;
+    // this isn't ideal, but using a delta works!
+    const p1 = new Vector3(0, 0, 0);
+    const p2 = new Vector3(viewportDelta.x, viewportDelta.y, 0);
+    p1.unproject(this.camera);
+    p2.unproject(this.camera);
+    const delta3 = p2.clone().sub(p1);
+    if (!this.target) {
+      return;
+    }
+    this.target.position.add(delta3);
   }
 
   reset() {
@@ -59,6 +71,7 @@ class SceneController {
       material.dispose()
     })
     this.sceneObjects = []
+    this.target = null;
   }
 
 }

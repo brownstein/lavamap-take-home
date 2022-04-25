@@ -6,12 +6,19 @@ import {SceneController} from './sceneController.js'
 
 const threeViewport = document.querySelector('#threeViewport')
 const resetButton = document.querySelector('#reset')
+const buttons = {};
+buttons.up = document.querySelector('#up');
+buttons.down = document.querySelector('#down');
+buttons.left = document.querySelector('#left');
+buttons.right = document.querySelector('#right');
 
 const bounds = 600
 let scene, sceneController, renderer, camera, cameraController
 
 
 const initializeScene = () => {
+  const { Vector2 } = THREE;
+
   scene = new THREE.Scene()
   scene.background = new THREE.Color( 0xeeeeee )
 
@@ -50,6 +57,12 @@ const initializeScene = () => {
     cameraController.reset()
     sceneController.reset()
   }
+
+  const moveDistance = 30;
+  buttons.left.onclick = () => sceneController.move(new Vector2(-moveDistance, 0));
+  buttons.right.onclick = () => sceneController.move(new Vector2(moveDistance, 0));
+  buttons.up.onclick = () => sceneController.move(new Vector2(0, moveDistance));
+  buttons.down.onclick = () => sceneController.move(new Vector2(0, -moveDistance));
 }
 
 const render = () => renderer.render( scene, camera )
